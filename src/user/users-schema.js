@@ -11,17 +11,17 @@ const userSchema = mongoose.Schema({ // make the schema to user info
 });
 
 //------ Before Save hash password --> pre function --------//
-userSchema.pre('save' ,  async function(record){
-  if(!userSchema.username){
-    record.username = await bcrypt.hash(record.password , complixity);
-    userSchema.username = record;
-    return record;
-  }else{
-    return Promise.reject();
-  }
-});
+// userSchema.pre('save' ,  async function(record){
+//   if(!userSchema.username){
+//     record.username = await bcrypt.hash(record.password , complixity);
+//     userSchema.username = record;
+//     return record;
+//   }else{
+//     return Promise.reject();
+//   }
+// });
 
-let complixity = 5;
+// let complixity = 5;
 //--------------- SignUp -------------//
 // let hashingPw = async function(record){
 //   if(!userSchema.username){

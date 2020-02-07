@@ -8,6 +8,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const logger = require('../lib/logger.js');
 const User = require('../user/user-model.js');
+const Schema = require('../user/users-schema.js');
+const bcrypt = require('bcryptjs');
 // const auth = require('../auth/auth-middleware.js');
 
 //---------------------- My application Constants -------------//
@@ -21,10 +23,29 @@ server.use(logger);
 
 //----------------- Create a record by SignUp Route ------------//
 
-authRouter.post('/signup' , (req , res) =>{
+
+// let complixity = 5;
+
+
+// userSchema.pre('save' ,  async function(record){
+//   if(!userSchema.username){
+//     record.username = await bcrypt.hash(record.password , complixity);
+//     userSchema.username = record;
+//     return record;
+//   }else{
+//     return Promise.reject();
+//   }
+// });
+
+server.post('/signup' , (req , res) =>{
   let user = new User(req.body);
-  user.save()
+  let userSchema = new Schema();
+  console.log('user schema' , userSchema);
+  console.log('useeeeer' , user);
+  console.log('requset body ',req.body);
+  userSchema.save(req.body)
     .then( newUser =>{
+      console.log('new user =====' , newUser);
       req.token = user.generatendToken();
       req.user = newUser;
       res.status(200).send(req.token);

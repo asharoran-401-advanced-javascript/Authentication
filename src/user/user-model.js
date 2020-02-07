@@ -1,7 +1,7 @@
 // eslint-disable-next-line strict
 'use strict';
 
-const userSchema = require('../user/users-schema');
+const userSchema = require('../user/users-schema.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 class User {
