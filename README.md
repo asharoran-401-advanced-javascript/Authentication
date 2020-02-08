@@ -3,8 +3,8 @@
 Authentication
 ## Author: As-har Oran
 ## Links and Resources
-* (pull request ) : 
-* ( action) : 
+* (pull request ) : [https://github.com/asharoran-401-advanced-javascript/Authentication/pull/1]
+* ( action) : [https://github.com/asharoran-401-advanced-javascript/Authentication/actions]
 ## Setup
 - npm init -y
 - npm install , npm i
@@ -19,3 +19,6 @@ Authentication
 ## Tests
 Unit Tests: npm test , npm run test
 Eslint: npm run lint
+
+## UML 
+* (white Board) : ![alst test](assets/lab-11-athentication.jpg)
