@@ -1,6 +1,10 @@
 // // eslint-disable-next-line strict
 // 'use strict';
 
+
+////////////////////////////////////////////////////// I'm try to do model for User but if fail ////////////////////////////////
+
+
 // const userSchema = require('../user/users-schema.js');
 // const bcrypt = require('bcryptjs');
 // const jwt = require('jsonwebtoken');
