@@ -2,61 +2,28 @@
 'use strict';
 
 //----------------------- 3rd parrty Dependencies  ------------//
-
+// require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const logger = require('../lib/logger.js');
-const User = require('../user/user-model.js');
-const Schema = require('../user/users-schema.js');
-const bcrypt = require('bcryptjs');
-// const auth = require('../auth/auth-middleware.js');
+// const User = require('../user/user-model.js');
+const router = require('../router/route.js')
+const notFoundError = require('../middleware/404.js');
+const errorHandler = require('../middleware/500.js');
 
 //---------------------- My application Constants -------------//
-const authRouter = express.Router();
 const server = express();
 server.use(express.json());
 server.use(express.urlencoded({extended:true}));
 server.use(cors());
 server.use(morgan('dev'));
 server.use(logger);
+server.use(router);
 
-//----------------- Create a record by SignUp Route ------------//
-
-
-// let complixity = 5;
-
-
-// userSchema.pre('save' ,  async function(record){
-//   if(!userSchema.username){
-//     record.username = await bcrypt.hash(record.password , complixity);
-//     userSchema.username = record;
-//     return record;
-//   }else{
-//     return Promise.reject();
-//   }
-// });
-
-server.post('/signup' , (req , res) =>{
-  let user = new User(req.body);
-  let userSchema = new Schema();
-  console.log('user schema' , userSchema);
-  console.log('useeeeer' , user);
-  console.log('requset body ',req.body);
-  userSchema.save(req.body)
-    .then( newUser =>{
-      console.log('new user =====' , newUser);
-      req.token = user.generatendToken();
-      req.user = newUser;
-      res.status(200).send(req.token);
-    })
-    .catch((error) =>console.error(error));
-});
-
-authRouter.post('/signin' , (req ,res) =>{
-  res.status(200).send(req.token);
-});
-
+//--------------------- Catch Call (Error) -----------------//
+server.use(notFoundError);
+server.use(errorHandler);
 
 module.exports = {
   server : server,
