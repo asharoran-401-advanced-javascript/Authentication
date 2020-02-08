@@ -18,7 +18,7 @@ userSchema.pre('save' ,  async function(record){
 //   if(!userSchema.find(record)){
   this.password = await bcrypt.hash(this.password , complixity);
   // userSchema.username = record;
-  // userSchema.save(record) = record
+  // userSchema.save(record)
   return record;
 });
 
@@ -34,6 +34,12 @@ userSchema.methods.generatendToken = () =>{
   let SECRET = 'seecreetAshar';
   let token = jwt.sign({username : this.username} , SECRET);
   return token;
+};
+
+userSchema.statics.generateOauth = (username) =>{
+  if(!username) { return Promise.reject('Validation Error'); }
+  console.log('my user in Outh' , username);
+  this.findOne({username: this.username});
 };
 //--------------- SignUp -------------//
 // let hashingPw = async function(record){
