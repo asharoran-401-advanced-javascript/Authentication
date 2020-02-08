@@ -24,7 +24,7 @@ userSchema.pre('save' ,  async function(record){
 
 userSchema.statics.authentication = (username , password) =>{
   console.log('user name' , username);
-  return userSchema.findOne({username: username.username})
+  return userSchema.findOne({username: this.username})
     .then( username =>{
       let isVoalid =  bcrypt.compare(password , this.password);
       console.log('password user' , password);
@@ -41,7 +41,7 @@ userSchema.methods.generatendToken = () =>{
 
 userSchema.methods.authenticationToken = async function (token){
   try {
-    let varifyToken = await jwt.verify(token , SECRET); //comparing
+    let varifyToken = await jwt.verify(token , SECRET);
     if(varifyToken.username){
       Promise.resolve(varifyToken);
 
