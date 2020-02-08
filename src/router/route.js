@@ -9,7 +9,7 @@ const UserSchema = require('../user/users-schema.js');
 const auth = require('../auth/auth-middleware.js');
 const oauth = require('../oauth/oauth-middleware.js');
 const bearer = require('../bearer/bearer-middleware.js');
-
+const acl = require('../acl/acl-middleware.js');
 //---------------------- test route ---------------//
 router.get('/test' , (req , res) =>{
   res.send('hellllo , its Me');
@@ -44,11 +44,26 @@ router.get('/users' ,auth, (req ,res  , next) =>{
 });
 //------------------------ Oauth -------------------//
 router.get('/oauth', oauth , (req, res , next) =>{
-
+  res.status(200).send(req.token);
 });
 //------------------------ Bearer Auth ---------------//
 router.get('/user' , bearer , (req , res, next) =>{
   res.status(200).json(req.user);
 });
+
+//---------------------
+router.get('/get' , bearer , acl('get') , (req , res , next) =>{
+  res.status(200).send('greate you autherized');
+});
+
+router.get('/update' , bearer , acl('update') , (req , res , next) =>{
+  res.status(200).send(' update autherization ');
+});
+
+router.get('/delete' , bearer , acl('delete') , (req , res , next) =>{
+  res.status(200).send(' delete autherization');
+});
+
+
 
 module.exports = router;

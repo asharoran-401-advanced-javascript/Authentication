@@ -8,8 +8,15 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({ // make the schema to user info
   username : {type : String , require : true},
   password : { type : String , require : true},
+  role : {type : String , enum : ['admin' , 'user' , 'editor' ]},
 } ,{toObject : { virtuals : true} , toJSON : { virtuals : true}, // fack connection
 });
+
+const capabilities = {
+  admin: ['create','read','update','delete'],
+  user: ['read'],
+  editor: ['create', 'read', 'update'],
+};
 
 //------ Before Save hash password --> pre function --------//
 let complixity = 5;
@@ -35,16 +42,20 @@ userSchema.statics.authentication = (username , password) =>{
 let SECRET = 'seecreetAshar';
 
 userSchema.methods.generatendToken = () =>{
-  let token = jwt.sign({username : this.username} , SECRET);
+  let userInformaion = {
+    username : this.username,
+    // capabilities : this.role,
+    capabilities: capabilities[this.role], //
+  };
+  let token = jwt.sign(userInformaion, SECRET);
   return token;
 };
 
-userSchema.methods.authenticationToken = async function (token){
+userSchema.statics.authenticationToken = function (token){
   try {
-    let varifyToken = await jwt.verify(token , SECRET);
+    let varifyToken =  jwt.verify(token , SECRET);
     if(varifyToken.username){
       Promise.resolve(varifyToken);
-
     }
     Promise.reject();
   }
@@ -53,6 +64,12 @@ userSchema.methods.authenticationToken = async function (token){
 
   }
 };
+
+//------------------- try here bcause i can't add the role in acl file -----//
+
+// userSchema.methods.acl = function(capability) {
+//   return capabilities[this.role].includes(capability);
+// };
 
 // userSchema.statics.generateOauth = (username) =>{
 //   if(!username) { return Promise.reject('Validation Error'); }
