@@ -49,7 +49,7 @@ async function getUser(userRecord){
   };
   console.log(' User Record () :' , recordForUser.username);
   console.log('my brack user() :' , users.save);
-  let user = await users.generateOauth(recordForUser);
+  let user = await users.authentication(recordForUser);
   let token = users.generatendToken(user);
 
   return [user ,token];

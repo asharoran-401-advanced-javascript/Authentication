@@ -22,12 +22,15 @@ userSchema.pre('save' ,  async function(record){
   return record;
 });
 
-userSchema.methods.authentication = async (username , password) =>{
-  this.findOne({username: this.username});
+userSchema.statics.authentication = (username , password) =>{
   console.log('user name' , username);
-  let isVoalid = await bcrypt.compare(password , this.password);
-  console.log('password user' , password);
-  return isVoalid ? username : Promise.reject();
+  return userSchema.findOne({username: username.username})
+    .then( username =>{
+      let isVoalid =  bcrypt.compare(password , this.password);
+      console.log('password user' , password);
+      return isVoalid ? username : Promise.reject();
+
+    });
 };
 
 userSchema.methods.generatendToken = () =>{
@@ -36,11 +39,11 @@ userSchema.methods.generatendToken = () =>{
   return token;
 };
 
-userSchema.statics.generateOauth = (username) =>{
-  if(!username) { return Promise.reject('Validation Error'); }
-  console.log('my user in Outh' , username);
-  this.findOne({username: this.username});
-};
+// userSchema.statics.generateOauth = (username) =>{
+//   if(!username) { return Promise.reject('Validation Error'); }
+//   console.log('my user in Outh' , username);
+//   this.findOne({username: this.username});
+// };
 //--------------- SignUp -------------//
 // let hashingPw = async function(record){
 //   if(!userSchema.username){
