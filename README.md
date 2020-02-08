@@ -7,6 +7,8 @@ Authentication
 * ( action) : [https://github.com/asharoran-401-advanced-javascript/Authentication/actions]
 
 * ( mongo resourse to add method to mongo) : [https://mongoosejs.com/docs/guide.html#methods]
+
+* (swagger) : [https://inspector.swagger.io/builder]
 ## Setup
 - npm init -y
 - npm install , npm i

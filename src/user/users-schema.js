@@ -32,11 +32,26 @@ userSchema.statics.authentication = (username , password) =>{
 
     });
 };
+let SECRET = 'seecreetAshar';
 
 userSchema.methods.generatendToken = () =>{
-  let SECRET = 'seecreetAshar';
   let token = jwt.sign({username : this.username} , SECRET);
   return token;
+};
+
+userSchema.methods.authenticationToken = async function (token){
+  try {
+    let varifyToken = await jwt.verify(token , SECRET); //comparing
+    if(varifyToken.username){
+      Promise.resolve(varifyToken);
+
+    }
+    Promise.reject();
+  }
+  catch(error){
+    console.error('error' , error);
+
+  }
 };
 
 // userSchema.statics.generateOauth = (username) =>{

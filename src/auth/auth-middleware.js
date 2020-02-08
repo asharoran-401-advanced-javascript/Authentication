@@ -10,7 +10,7 @@ const users = require('../user/users-schema.js');
 //=========== Reads the encoded username and password from the Authentication header =====//
 module.exports = (req , res , next) =>{ // Global MiddleWare
   if(!req.headers.authorization){
-    console.log('req',req);
+    console.log('req',req.headers);
     console.log('req.headers.authorization',req.headers.authorization);
     next('Invalid LogIn Please Try Again');
   }

@@ -8,6 +8,7 @@ const router = new express.Router();
 const UserSchema = require('../user/users-schema.js');
 const auth = require('../auth/auth-middleware.js');
 const oauth = require('../oauth/oauth-middleware.js');
+const bearer = require('../bearer/bearer-middleware.js');
 
 //---------------------- test route ---------------//
 router.get('/test' , (req , res) =>{
@@ -24,7 +25,6 @@ router.post('/signup' , (req , res, next) =>{
       console.log('new user =====' , newUser);
       req.token = newUser.generatendToken();
       console.log('my req tokeeen () :' , req.token);
-      // req.user = newUser;
       res.send(req.token);
     })
     .catch(next);
@@ -38,13 +38,16 @@ router.get('/users' ,auth, (req ,res  , next) =>{
 //   let user = new UserSchema();
   UserSchema.get()
     .then( result =>{
-      let count = result.length;
-      res.status(200).json({result , count});
+      // let count = result.length;
+      res.status(200).json(result);
     });
 });
 //------------------------ Oauth -------------------//
-router.get('/oauth', oauth , (req, res) =>{
-  res.status(200).send(req.token);
+router.get('/oauth', oauth , (req, res , next) =>{
+});
+//------------------------ Bearer Auth ---------------//
+router.get('/user' , bearer , (req , res, next) =>{
+  res.status(200).json(req.user);
 });
 
 module.exports = router;
