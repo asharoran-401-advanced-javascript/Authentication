@@ -13,7 +13,6 @@ module.exports = (req , res , next) =>{ // Global MiddleWare
     console.log('req',req);
     console.log('req.headers.authorization',req.headers.authorization);
     next('Invalid LogIn Please Try Again');
-    return;
   }
   let basic = req.headers.authorization.split(' ').pop();
   let [username , password] = base64.decode(basic).split(':');
