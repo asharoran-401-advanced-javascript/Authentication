@@ -5,6 +5,8 @@ Authentication
 ## Links and Resources
 * (pull request ) : [https://github.com/asharoran-401-advanced-javascript/Authentication/pull/1]
 * ( action) : [https://github.com/asharoran-401-advanced-javascript/Authentication/actions]
+
+* ( mongo resourse to add method to mongo) : [https://mongoosejs.com/docs/guide.html#methods]
 ## Setup
 - npm init -y
 - npm install , npm i
