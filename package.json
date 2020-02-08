@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/asharoran-401-advanced-javascript/Authentication#readme",
   "dependencies": {
+    "@code-fellows/supergoose": "^1.0.1",
     "base-64": "^0.1.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
