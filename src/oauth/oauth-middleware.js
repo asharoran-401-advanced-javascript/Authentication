@@ -48,8 +48,8 @@ async function getUser(userRecord){
     password: '12345789ashaaaaaar',
   };
   console.log(' User Record () :' , recordForUser.username);
-  console.log('my brack user() :' , users.save);
-  let user = await users.authentication(recordForUser);
+  console.log('my brack user() :' , users);
+  let user = await users.generateOauth(recordForUser);
   let token = users.generatendToken(user);
 
   return [user ,token];

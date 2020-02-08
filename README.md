@@ -12,9 +12,9 @@ Authentication
 ## .env requirements
 - PORT - 3000
 - MONGODB_URI - mongodb://localhost:27017/authentication
-CLIENT_ID=7ebc59bd640a5bd648bc
-CLIENT_SECRET=1ca17f55640b1ef61a200b29422907a5f785890e
-API_SERVER=http://localhost:3000/oauth
+- CLIENT_ID=7ebc59bd640a5bd648bc
+- CLIENT_SECRET=1ca17f55640b1ef61a200b29422907a5f785890e
+- API_SERVER=http://localhost:3000/oauth
 ## How to initialize/run your server app (where applicable)
 - Start App: npm start
 - Endpoint: /api-docs
