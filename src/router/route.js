@@ -52,9 +52,23 @@ router.get('/user' , bearer , (req , res, next) =>{
 });
 
 //---------------------
-router.get('/get' , bearer , acl('get') , (req , res , next) =>{
-  res.status(200).send('greate you autherized');
+router.get('/public' , bearer , acl('public') , (req , res , next) =>{
+  res.status(200). render('./public/index.html');
 });
+
+router.get('/private' , bearer , acl('private') , (req , res , next) =>{
+  res.status(200).send('private information');
+});
+
+router.get('/readonly' , bearer , acl('readonly') , (req , res , next) =>{
+  res.status(200).send('read only');
+});
+
+router.get('/create' , bearer , acl('create') , (req , res , next) =>{
+  res.status(200).send('read');
+});
+
+
 
 router.get('/update' , bearer , acl('update') , (req , res , next) =>{
   res.status(200).send(' update autherization ');
@@ -63,6 +77,11 @@ router.get('/update' , bearer , acl('update') , (req , res , next) =>{
 router.get('/delete' , bearer , acl('delete') , (req , res , next) =>{
   res.status(200).send(' delete autherization');
 });
+
+router.get('/everything' , bearer , acl('everything') , (req , res , next) =>{
+  res.status(200).send('greate you autherized');
+});
+
 
 
 
