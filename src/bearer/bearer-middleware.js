@@ -1,17 +1,17 @@
 // eslint-disable-next-line strict
 'use strict';
 
-const users = require('../user/users-schema.js');
+const Users = require('../user/users-schema.js');
 
-module.exports = (req, res , next) =>{
-  if(!req.headers.authorization) {next('invalid Login please try again');}
+module.exports = (req, res, next) => {
+  if (!req.headers.authorization) { next('invalid login'); }
 
   let token = req.headers.authorization.split(' ').pop();
 
-  users.authenticationToken(token)
-    .then( user =>{
-      req.user = user;
+  Users.authenticateToken(token)
+    .then(validUser => {
+      req.user = validUser;
       next();
-    })
-    .catch( error => next(error));
+    }).catch(err => next(err));
 };
+

@@ -1,76 +1,59 @@
+
 // eslint-disable-next-line strict
 'use strict';
 
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({ // make the schema to user info
-  username : {type : String , require : true},
-  password : { type : String , require : true},
-} ,{toObject : { virtuals : true} , toJSON : { virtuals : true}, // fack connection
+const users = new mongoose.Schema({ // make the schema to user info
+  username: {type: String, required: true, unique: true},
+  password: {type: String, required: true},
 });
 
-//------ Before Save hash password --> pre function --------//
+// //------ Before Save hash password --> pre function --------//
 let complixity = 5;
-//--------------- SignUp -------------//
-userSchema.pre('save' ,  async function(record){
-//   if(!userSchema.find(record)){
-  this.password = await bcrypt.hash(this.password , complixity);
-  // userSchema.username = record;
-  // userSchema.save(record)
-  return record;
+// //--------------- SignUp -------------//
+users.pre('save', async function(){
+  if (!users.username) {
+    this.password = await bcrypt.hash(this.password, complixity);
+  }
 });
 
-userSchema.statics.authentication = (username , password) =>{
-  console.log('user name' , username);
-  return userSchema.findOne({username: this.username})
-    .then( username =>{
-      let isVoalid =  bcrypt.compare(password , this.password);
-      console.log('password user' , password);
-      return isVoalid ? username : Promise.reject();
-
-    });
+users.statics.authenticateBasic = function(auth) {
+  return this.findOne({username:auth.username})
+    .then(user => user.passCompare(auth.password))
+    .catch(console.error);
 };
-let SECRET = 'seecreetAshar';
 
-userSchema.methods.generatendToken = () =>{
-  let token = jwt.sign({username : this.username} , SECRET);
+users.methods.passCompare = function(password) {
+  return bcrypt.compare(password, this.password)
+    .then(valid => valid ? this : null);
+};
+// let SECRET = 'seecreetAshar';
+
+users.methods.generateToken = function(user) {
+  let token = jwt.sign({ username: user.username}, process.env.SECRET);
   return token;
 };
 
-userSchema.methods.authenticationToken = async function (token){
+users.statics.list =  async function(){
+  let results = await this.find({});
+  return results;
+};
+
+users.statics.authenticateToken = async function(token){
   try {
-    let varifyToken = await jwt.verify(token , SECRET);
-    if(varifyToken.username){
-      Promise.resolve(varifyToken);
-
+    let tokenObject = jwt.verify(token, process.env.SECRET);
+    console.log(tokenObject);
+    if (tokenObject.username) {
+      return Promise.resolve(tokenObject);
+    } else {
+      return Promise.reject();
     }
-    Promise.reject();
-  }
-  catch(error){
-    console.error('error' , error);
-
+  } catch (err) {
+    return Promise.reject();
   }
 };
 
-// userSchema.statics.generateOauth = (username) =>{
-//   if(!username) { return Promise.reject('Validation Error'); }
-//   console.log('my user in Outh' , username);
-//   this.findOne({username: this.username});
-// };
-//--------------- SignUp -------------//
-// let hashingPw = async function(record){
-//   if(!userSchema.username){
-//     record.username = await bcrypt.hash(record.password , complixity);
-//     userSchema.username = record;
-//     return record;
-//   }else{
-//     return Promise.reject();
-//   }
-// };
-
-
-
-module.exports = mongoose.model('users' , userSchema);
-
+module.exports = mongoose.model('users',users);
