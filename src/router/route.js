@@ -1,50 +1,49 @@
 // eslint-disable-next-line strict
-'use strict';
+// 'use strict';
 
 const express = require('express');
+const authRouter = express.Router();
 
-const router = new express.Router();
-
-const UserSchema = require('../user/users-schema.js');
-const auth = require('../auth/auth-middleware.js');
+const Users = require('../user/users-schema.js');
+const basicAuth = require('../auth/auth-middleware.js');
 const oauth = require('../oauth/oauth-middleware.js');
 
-//---------------------- test route ---------------//
-router.get('/test' , (req , res) =>{
-  res.send('hellllo , its Me');
-});
-//----------------- Create a record by SignUp Route ------------//
+// // //---------------------- test route ---------------//
+// // router.get('/test' , (req , res) =>{
+// //   res.send('hellllo , its Me');
+// // });
+// // //----------------- Create a record by SignUp Route ------------//
 
-router.post('/signup' , (req , res, next) =>{
-  let user = new UserSchema(req.body);
-  //   console.log('useeeeer' , user);
-  console.log('requset body ',req.body);
+authRouter.post('/signup', (req, res,next) => {
+  let user = new Users(req.body);
   user.save()
-    .then( newUser =>{
-      console.log('new user =====' , newUser);
-      req.token = newUser.generatendToken();
-      console.log('my req tokeeen () :' , req.token);
-      // req.user = newUser;
-      res.send(req.token);
-    })
-    .catch(next);
+    .then(data => {
+      req.token = user.generateToken(data);
+      res.status(200).send(req.token);
+    }).catch(next);
 });
 
-router.post('/signin' ,auth, (req ,res , next) =>{
+authRouter.post('/signin', basicAuth, (req, res) => {
   res.status(200).send(req.token);
 });
 
-router.get('/users' ,auth, (req ,res  , next) =>{
-//   let user = new UserSchema();
-  UserSchema.get()
-    .then( result =>{
-      let count = result.length;
-      res.status(200).json({result , count});
+authRouter.get('/users',(req, res) => {
+  Users.list()
+    .then(data=>{
+      res.status(200).json(data);
     });
 });
 //------------------------ Oauth -------------------//
-router.get('/oauth', oauth , (req, res) =>{
+authRouter.get('/oauth', oauth , (req, res) =>{
   res.status(200).send(req.token);
 });
 
-module.exports = router;
+// authRouter.get('/oauth', oauth, (req, res) => {
+//   res.status(200).send(req.token);
+// });
+
+// authRouter.get('/user', bearerAuth, (req, res) => {
+//   res.status(200).json(req.user);
+// });
+
+module.exports = authRouter;
