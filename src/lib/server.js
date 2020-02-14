@@ -8,7 +8,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const logger = require('../lib/logger.js');
 // const User = require('../user/user-model.js');
-const router = require('../router/route.js')
+const router = require('../router/route.js');
 const notFoundError = require('../middleware/404.js');
 const errorHandler = require('../middleware/500.js');
 
