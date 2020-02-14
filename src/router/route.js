@@ -1,88 +1,85 @@
 // eslint-disable-next-line strict
-'use strict';
+// 'use strict';
 
 const express = require('express');
+const authRouter = express.Router();
 
-const router = new express.Router();
-
-const UserSchema = require('../user/users-schema.js');
-const auth = require('../auth/auth-middleware.js');
+const Users = require('../user/users-schema.js');
+const basicAuth = require('../auth/auth-middleware.js');
 const oauth = require('../oauth/oauth-middleware.js');
-const bearer = require('../bearer/bearer-middleware.js');
+const bearerAuth = require('../bearer/bearer-middleware.js');
 const acl = require('../acl/acl-middleware.js');
-//---------------------- test route ---------------//
-router.get('/test' , (req , res) =>{
-  res.send('hellllo , its Me');
-});
-//----------------- Create a record by SignUp Route ------------//
+// // //---------------------- test route ---------------//
+// // router.get('/test' , (req , res) =>{
+// //   res.send('hellllo , its Me');
+// // });
+// // //----------------- Create a record by SignUp Route ------------//
 
-router.post('/signup' , (req , res, next) =>{
-  let user = new UserSchema(req.body);
-  //   console.log('useeeeer' , user);
-  console.log('requset body ',req.body);
+authRouter.post('/signup', (req, res,next) => {
+  let user = new Users(req.body);
   user.save()
-    .then( newUser =>{
-      console.log('new user =====' , newUser);
-      req.token = newUser.generatendToken();
-      console.log('my req tokeeen () :' , req.token);
-      res.send(req.token);
-    })
-    .catch(next);
+    .then(data => {
+      req.token = user.generateToken(data);
+      res.status(200).send(req.token);
+    }).catch(next);
 });
 
-router.post('/signin' ,auth, (req ,res , next) =>{
+authRouter.post('/signin', basicAuth, (req, res) => {
   res.status(200).send(req.token);
 });
 
-router.get('/users' ,auth, (req ,res  , next) =>{
-//   let user = new UserSchema();
-  UserSchema.get()
-    .then( result =>{
-      // let count = result.length;
-      res.status(200).json(result);
+authRouter.get('/users',(req, res) => {
+  Users.list()
+    .then(data=>{
+      res.status(200).json(data);
     });
 });
 //------------------------ Oauth -------------------//
-router.get('/oauth', oauth , (req, res , next) =>{
+authRouter.get('/oauth', oauth , (req, res) =>{
   res.status(200).send(req.token);
 });
-//------------------------ Bearer Auth ---------------//
-router.get('/user' , bearer , (req , res, next) =>{
+//---------------------- bearerAuth -----------------//
+
+authRouter.get('/user', bearerAuth, (req, res) => {
   res.status(200).json(req.user);
 });
 
 //---------------------
-router.get('/public' , bearer , acl('public') , (req , res , next) =>{
-  res.status(200). render('./public/index.html');
+authRouter.get('/public' , bearerAuth ,  (req , res , next) =>{
+  Users.list()
+    .then( user =>{
+      res.status(200).json(user);
+
+    });
 });
 
-router.get('/private' , bearer , acl('private') , (req , res , next) =>{
-  res.status(200).send('private information');
+authRouter.get('/private' , bearerAuth ,(req , res , next) =>{
+  res.status(200).send(req.user);
 });
 
-router.get('/readonly' , bearer , acl('readonly') , (req , res , next) =>{
+authRouter.get('/readonly' , bearerAuth , acl('readonly') , (req , res , next) =>{
   res.status(200).send('read only');
 });
 
-router.get('/create' , bearer , acl('create') , (req , res , next) =>{
+authRouter.get('/create' , bearerAuth , acl('create') , (req , res , next) =>{
   res.status(200).send('read');
 });
 
 
 
-router.get('/update' , bearer , acl('update') , (req , res , next) =>{
+authRouter.get('/update' , bearerAuth , acl('update') , (req , res , next) =>{
   res.status(200).send(' update autherization ');
 });
 
-router.get('/delete' , bearer , acl('delete') , (req , res , next) =>{
+authRouter.get('/delete' , bearerAuth , acl('delete') , (req , res , next) =>{
   res.status(200).send(' delete autherization');
 });
 
-router.get('/everything' , bearer , acl('everything') , (req , res , next) =>{
+authRouter.get('/everything' , bearerAuth , acl('read, create, update, delete') , (req , res , next) =>{
   res.status(200).send('greate you autherized');
 });
 
 
 
 
-module.exports = router;
+module.exports = authRouter;
